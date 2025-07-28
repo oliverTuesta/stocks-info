@@ -1,0 +1,44 @@
+# ───── Global ignores ─────
+.DS_Store
+Thumbs.db
+*.log
+*.env
+*.env.*.local
+.env.local
+node_modules/
+dist/
+coverage/
+.vscode/
+.idea/
+*.swp
+
+# ───── Go backend ignores ─────
+backend/bin/
+backend/stocks-app
+*.out
+*.test
+*.exe
+
+# Cache and vendor
+/backend/.cache
+/backend/vendor/
+
+# ───── Vue 3 frontend ignores ─────
+frontend/node_modules/
+frontend/dist/
+frontend/.vitepress/
+frontend/.output/
+
+# ───── Terraform (optional) ─────
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# ───── Docker ─────
+**/.docker/
+docker-compose.override.yml
+
+# ───── OS generated files ─────
+ehthumbs.db
+Icon?
+Desktop.ini
