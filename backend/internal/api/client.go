@@ -18,14 +18,15 @@ func FetchAllStockRecommendations() ([]model.StockRecommendation, error) {
 	var allItems []model.StockRecommendation
 	nextPage := ""
 
+	err := godotenv.Load()
+	if err != nil {
+		return nil, fmt.Errorf("error loading .env file %w", err)
+	}
+
+	url := os.Getenv("SOURCE_BASE_URL")
+
 	for {
 
-		err := godotenv.Load()
-		if err != nil {
-			return nil, fmt.Errorf("error loading .env file %w", err)
-		}
-
-		url := os.Getenv("SOURCE_BASE_URL")
 		fmt.Println(url)
 		if nextPage != "" {
 			url += "?next_page=" + nextPage
