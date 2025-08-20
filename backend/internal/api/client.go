@@ -26,7 +26,6 @@ func FetchAllStockRecommendations() ([]model.StockRecommendation, error) {
 	url := os.Getenv("SOURCE_BASE_URL")
 
 	for {
-
 		fmt.Println(url)
 		if nextPage != "" {
 			url += "?next_page=" + nextPage

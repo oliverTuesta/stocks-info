@@ -29,7 +29,7 @@ func (p *Price) UnmarshalJSON(data []byte) error {
 }
 
 type StockRecommendation struct {
-	ID         uint      `gorm:primaryKey;autoIncrement;not null" json:"id"`
+	ID         uint      `gorm:"primaryKey;autoIncrement;not null" json:"id"`
 	Ticker     string    `gorm:"column:ticker;not null" json:"ticker"`
 	Company    string    `gorm:"column:company;not null" json:"company"`
 	Brokerage  string    `gorm:"column:brokerage;not null" json:"brokerage"`
@@ -40,4 +40,5 @@ type StockRecommendation struct {
 	TargetTo   Price     `gorm:"column:target_to; not null" json:"target_to"`
 	Time       time.Time `gorm:"column:time;not null" json:"time"`
 	CreatedAt  time.Time `gorm:"column:created_at;autoCreateTime" json:"-"`
+	UpdatedAt  time.Time `gorm:"column:updated_at;autoUpdateTime" json:"-"`
 }
