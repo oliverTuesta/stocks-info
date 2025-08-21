@@ -1,10 +1,10 @@
-package db
+package usecase
 
 import (
 	"encoding/csv"
 	"fmt"
 	"github.com/joho/godotenv"
-	"githug.com/oliverTuesta/stocks-info/backend/internal/model"
+	"github.com/oliverTuesta/stocks-info/backend/internal/domain"
 	"gorm.io/gorm"
 	"log"
 	"os"
@@ -38,7 +38,7 @@ func ImportCompaniesFromCSV(db *gorm.DB, filePath string) error {
 		return fmt.Errorf("failed to read csv: %w", err)
 	}
 
-	var companies []model.Company
+	var companies []domain.Company
 
 	for i, row := range records {
 		if i == 0 {
@@ -48,7 +48,7 @@ func ImportCompaniesFromCSV(db *gorm.DB, filePath string) error {
 		marketCap, _ := strconv.ParseUint(row[8], 10, 64)
 		logoUrl := fmt.Sprintf("%s%s.png", logoBaseURL, row[0])
 
-		company := model.Company{
+		company := domain.Company{
 			Ticker:      row[0],
 			CompanyName: row[1],
 			ShortName:   row[2],

@@ -1,14 +1,14 @@
 package db
 
 import (
-	"githug.com/oliverTuesta/stocks-info/backend/internal/model"
+	"github.com/oliverTuesta/stocks-info/backend/internal/domain"
 	"gorm.io/gorm"
 )
 
 func Migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
-		&model.StockRecommendation{},
-		&model.Company{},
+		&domain.StockRecommendation{},
+		&domain.Company{},
 	)
 	if err != nil {
 		return err

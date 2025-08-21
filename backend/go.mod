@@ -1,4 +1,4 @@
-module githug.com/oliverTuesta/stocks-info/backend
+module github.com/oliverTuesta/stocks-info/backend
 
 go 1.24.5
 

@@ -1,7 +1,11 @@
-package server
+package main
 
 import (
-	"githug.com/oliverTuesta/stocks-info/backend/internal/db"
+	"github.com/gin-gonic/gin"
+	"github.com/oliverTuesta/stocks-info/backend/internal/api"
+	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/db"
+	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/store"
+	"github.com/oliverTuesta/stocks-info/backend/internal/usecase"
 	"log"
 )
 
@@ -17,4 +21,14 @@ func main() {
 		log.Fatalf("DB migration failed: %v", err)
 	}
 
+	companyStore := store.NewCompanyStoreDB(conn)
+	companyUsecase := usecase.NewCompanyUsecase(companyStore)
+	companyHandler := api.NewCompanyHandler(companyUsecase)
+
+	router := gin.Default()
+	apiRoutes := router.Group("/api")
+	{
+		apiRoutes.GET("/companies", companyHandler.ListCompanies)
+	}
+	router.Run()
 }

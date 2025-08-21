@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
-	"githug.com/oliverTuesta/stocks-info/backend/internal/db"
+	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/db"
+	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/external"
+	"github.com/oliverTuesta/stocks-info/backend/internal/usecase"
 	"log"
+	"os"
 )
 
 func main() {
@@ -17,8 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("DB migration failed: %v", err)
 	}
-
-	err = db.ImportCompaniesFromCSV(conn, "data/companies.csv")
+	err = usecase.ImportCompaniesFromCSV(conn, "data/companies.csv")
 	if err != nil {
 		log.Fatalf("DB migration failed: %v", err)
 	} else {
@@ -27,13 +29,21 @@ func main() {
 
 	fmt.Println("Fetching stock data...")
 
-	/*stocks, err := api.FetchAllStockRecommendations()
+	baseURL := os.Getenv("SOURCE_BASE_URL")
+	bearer := os.Getenv("SOURCE_BEARER")
+
+	client := external.NewStockRecommendationClient(baseURL, bearer)
+	stocks, err := client.FetchAll()
+	if err != nil {
+		log.Fatal(err)
+	}
 	if err != nil {
 		log.Fatalf("Failed to fetch data: %v", err)
 	}
 
 	result := conn.Create(&stocks)
+
 	if result.Error != nil {
 		log.Fatalf("Failed to insert stock data: %v", result.Error)
-	}*/
+	}
 }

@@ -1,6 +1,6 @@
-package model
+package domain
 
-type APIResponse struct {
+type StockRecommendationAPIResponse struct {
 	Items    []StockRecommendation `json:"items"`
 	NextPage string                `json:"next_page"`
 }
