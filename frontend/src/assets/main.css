@@ -1,0 +1,30 @@
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@1&display=swap");
+@import './base.css';
+@import "tailwindcss";
+
+@theme {
+    --color-primary: oklch(27.9% 0.041 260.031); /* Example primary color */
+    /* You can also define shades if needed */
+    --color-primary-light: oklch(55.4% 0.046 257.417);
+    --color-primary-dark: #3a4b9c;
+}
+
+#app {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+  font-family: "Satoshi", sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  @apply font-bold;
+}
+
+h1 {
+    @apply text-4xl mb-4;
+}
+
+button {
+    @apply px-4 py-2 rounded transition;
+}
