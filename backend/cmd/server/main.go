@@ -5,6 +5,7 @@ import (
 	"github.com/oliverTuesta/stocks-info/backend/internal/api"
 	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/db"
 	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/store"
+	"github.com/oliverTuesta/stocks-info/backend/internal/middleware"
 	"github.com/oliverTuesta/stocks-info/backend/internal/usecase"
 	"log"
 )
@@ -26,6 +27,7 @@ func main() {
 	companyHandler := api.NewCompanyHandler(companyUsecase)
 
 	router := gin.Default()
+	router.Use(middleware.CORSMiddleware())
 	apiRoutes := router.Group("/api")
 	{
 		apiRoutes.GET("/companies", companyHandler.ListCompanies)

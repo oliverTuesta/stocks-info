@@ -15,7 +15,8 @@ func NewCompanyStoreDB(db *gorm.DB) *CompanyStoreDB {
 
 func (s *CompanyStoreDB) GetAll() ([]domain.Company, error) {
 	var companies []domain.Company
-	if err := s.db.Find(&companies).Error; err != nil {
+	err := s.db.Limit(10).Find(&companies).Error
+	if err != nil {
 		return nil, err
 	}
 	return companies, nil
