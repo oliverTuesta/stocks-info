@@ -1,18 +1,18 @@
 <template>
   <header class="mx-auto py-3 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-3">
+    <router-link to="/" class="flex items-center gap-3">
       <div class="w-10 h-10 bg-gradient-to-br from-primary to-primary-light rounded-lg flex items-center justify-center text-white font-extrabold">SI</div>
       <div>
         <p class="text-xl font-semibold">StocksInfo</p>
       </div>
-    </a>
+    </router-link>
 
     <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
-      <a href="/" class="hover:text-slate-900">Features</a>
-      <a href="/companies" class="hover:text-slate-900">Companies</a>
-      <a href="/recommendations" class="">
+      <router-link to="/" class="hover:text-slate-900">Features</router-link>
+      <router-link to="/companies" class="hover:text-slate-900">Companies</router-link>
+      <router-link to="/recommendations" class="">
         <button class="bg-primary text-white hover:bg-primary-light">Recommendations</button>
-      </a>
+      </router-link>
     </nav>
 
 
