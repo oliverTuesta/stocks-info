@@ -7,7 +7,7 @@ import (
 
 func Migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
-		&domain.StockRecommendation{},
+		&domain.StockAnalysis{},
 		&domain.Company{},
 	)
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/oliverTuesta/stocks-info/backend/internal/api"
 	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/db"
-	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/store"
+	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/repository"
 	"github.com/oliverTuesta/stocks-info/backend/internal/middleware"
 	"github.com/oliverTuesta/stocks-info/backend/internal/usecase"
 	"log"
@@ -22,8 +22,8 @@ func main() {
 		log.Fatalf("DB migration failed: %v", err)
 	}
 
-	companyStore := store.NewCompanyStoreDB(conn)
-	companyUsecase := usecase.NewCompanyUsecase(companyStore)
+	companyRepository := repository.NewCompanyRepositoryDB(conn)
+	companyUsecase := usecase.NewCompanyUsecase(companyRepository)
 	companyHandler := api.NewCompanyHandler(companyUsecase)
 
 	router := gin.Default()

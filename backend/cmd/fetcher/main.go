@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/db"
 	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/external"
+	"github.com/oliverTuesta/stocks-info/backend/internal/infrastructure/repository"
 	"github.com/oliverTuesta/stocks-info/backend/internal/usecase"
 	"log"
 	"os"
 )
 
 func main() {
+	_ = godotenv.Load()
+
 	conn, err := db.ConnectGorm()
 	if err != nil {
 		log.Fatalf("DB connection failed: %v", err)
@@ -20,30 +24,30 @@ func main() {
 	if err != nil {
 		log.Fatalf("DB migration failed: %v", err)
 	}
-	err = usecase.ImportCompaniesFromCSV(conn, "data/companies.csv")
-	if err != nil {
-		log.Fatalf("DB migration failed: %v", err)
-	} else {
-		fmt.Println("DB migration completed successfully")
+
+	logoBaseURL := os.Getenv("LOGOS_BASE_URL")
+	if logoBaseURL == "" {
+		log.Fatal("LOGOS_BASE_URL is not set")
 	}
 
-	fmt.Println("Fetching stock data...")
-
-	baseURL := os.Getenv("SOURCE_BASE_URL")
-	bearer := os.Getenv("SOURCE_BEARER")
-
-	client := external.NewStockRecommendationClient(baseURL, bearer)
-	stocks, err := client.FetchAll()
+	file, err := os.Open("data/companies.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer file.Close()
+
+	compRepo := repository.NewCompanyRepositoryDB(conn)
+	compImporter := usecase.NewCompaniesImporter(compRepo, logoBaseURL)
+	err = compImporter.Execute(file)
+
 	if err != nil {
-		log.Fatalf("Failed to fetch data: %v", err)
+		log.Fatal(err)
 	}
 
-	result := conn.Create(&stocks)
-
-	if result.Error != nil {
-		log.Fatalf("Failed to insert stock data: %v", result.Error)
-	}
+	baseURL := os.Getenv("SOURCE_BASE_URL")
+	bearer := os.Getenv("SOURCE_BEARER")
+	client := external.NewStockAnalysisClient(baseURL, bearer)
+	stockRepo := repository.NewStockAnalysisRepositoryDB(conn)
+	analysisImport := usecase.NewAnalysisUsecase(compRepo, stockRepo, client)
+	err = analysisImport.Execute()
 }

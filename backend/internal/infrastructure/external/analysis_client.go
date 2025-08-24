@@ -8,22 +8,22 @@ import (
 	"net/http"
 )
 
-type StockRecommendationClient struct {
+type StockAnalysisClient struct {
 	BaseURL string
 	Bearer  string
 	Client  *http.Client
 }
 
-func NewStockRecommendationClient(baseURL, bearer string) *StockRecommendationClient {
-	return &StockRecommendationClient{
+func NewStockAnalysisClient(baseURL, bearer string) *StockAnalysisClient {
+	return &StockAnalysisClient{
 		BaseURL: baseURL,
 		Bearer:  bearer,
 		Client:  http.DefaultClient,
 	}
 }
 
-func (c *StockRecommendationClient) FetchAll() ([]domain.StockRecommendation, error) {
-	var allItems []domain.StockRecommendation
+func (c *StockAnalysisClient) FetchAll() ([]domain.StockAnalysis, error) {
+	var allItems []domain.StockAnalysis
 	nextPage := ""
 
 	for {
@@ -44,7 +44,7 @@ func (c *StockRecommendationClient) FetchAll() ([]domain.StockRecommendation, er
 
 		body, _ := io.ReadAll(resp.Body)
 
-		var apiResp domain.StockRecommendationAPIResponse
+		var apiResp domain.StockAnalysisAPIResponse
 		if err := json.Unmarshal(body, &apiResp); err != nil {
 			return nil, fmt.Errorf("json parse error: %w", err)
 		}

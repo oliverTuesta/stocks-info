@@ -7,15 +7,15 @@ import (
 )
 
 type CompanyHandler struct {
-	usecase *usecase.CompanyUsecase
+	usecase *usecase.ListCompanies
 }
 
-func NewCompanyHandler(uc *usecase.CompanyUsecase) *CompanyHandler {
+func NewCompanyHandler(uc *usecase.ListCompanies) *CompanyHandler {
 	return &CompanyHandler{usecase: uc}
 }
 
 func (h *CompanyHandler) ListCompanies(c *gin.Context) {
-	companies, err := h.usecase.ListCompanies()
+	companies, err := h.usecase.Execute()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
