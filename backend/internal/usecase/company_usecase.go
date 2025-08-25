@@ -17,3 +17,7 @@ func (uc *CompanyUsecase) ListCompanies(req domain.PaginationRequest) (*domain.P
 func (uc *CompanyUsecase) GetCompanyByTicker(ticker string) (*domain.Company, error) {
 	return uc.repository.GetByTicker(ticker)
 }
+
+func (uc *CompanyUsecase) GetHotCompanies(limit int) ([]domain.Company, error) {
+	return uc.repository.GetHotCompanies(limit)
+}

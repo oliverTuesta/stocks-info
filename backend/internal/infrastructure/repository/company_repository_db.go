@@ -90,3 +90,56 @@ func (r *CompanyRepositoryDB) CreateMany(companies []domain.Company) error {
 func (r *CompanyRepositoryDB) CreateOne(company *domain.Company) error {
 	return r.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&company).Error
 }
+
+func (r *CompanyRepositoryDB) GetHotCompanies(limit int) ([]domain.Company, error) {
+	type CompanyWithPercent struct {
+		ID         uint    `gorm:"column:id"`
+		PercentInc float64 `gorm:"column:percent_inc"`
+	}
+
+	var companyResults []CompanyWithPercent
+
+	err := r.db.Table("companies c").
+		Select(`c.id, 
+            ((sa.target_to - sa.target_from) * 100.0 / sa.target_from) as percent_inc`).
+		Joins("JOIN stock_analyses sa ON sa.company_id = c.id").
+		Order("percent_inc DESC").
+		Limit(limit).
+		Scan(&companyResults).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	var companyIDs []uint
+	for _, result := range companyResults {
+		companyIDs = append(companyIDs, result.ID)
+	}
+
+	if len(companyIDs) == 0 {
+		return []domain.Company{}, nil
+	}
+
+	var companies []domain.Company
+	err = r.db.Preload("Analyses", func(db *gorm.DB) *gorm.DB {
+		return db.Order("time DESC, created_at DESC")
+	}).Where("id IN ?", companyIDs).Find(&companies).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	companyMap := make(map[uint]domain.Company)
+	for _, company := range companies {
+		companyMap[company.ID] = company
+	}
+
+	var orderedCompanies []domain.Company
+	for _, result := range companyResults {
+		if company, exists := companyMap[result.ID]; exists {
+			orderedCompanies = append(orderedCompanies, company)
+		}
+	}
+
+	return orderedCompanies, nil
+}

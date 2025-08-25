@@ -45,3 +45,16 @@ func (h *CompanyHandler) GetCompanyByTicker(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, company)
 }
+
+func (h *CompanyHandler) GetHotCompanies(c *gin.Context) {
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	if limit > 50 {
+		limit = 50
+	}
+	companies, err := h.usecase.GetHotCompanies(limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, companies)
+}
