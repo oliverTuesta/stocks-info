@@ -14,9 +14,14 @@ export interface Company {
   updated_at: string
 }
 
-export interface CompaniesResponse {
-  data: Company[]
-  total: number
+export interface PaginationInfo {
   page: number
   page_size: number
+  total: number
+  total_pages: number
+}
+
+export interface CompaniesResponse {
+  data: Company[]
+  pagination: PaginationInfo
 }
