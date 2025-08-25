@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div class="mx-auto px-4 py-8">
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-2">Companies</h1>
       <p class="text-gray-600">Browse and analyze all available companies</p>
@@ -12,7 +12,7 @@
           v-model="searchQuery"
           type="text"
           placeholder="Search companies by name..."
-          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent"
           @input="handleSearch"
         />
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -21,16 +21,16 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="bg-white rounded shadow overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-slate-200">
+          <thead class="bg-primary">
             <tr>
               <th
                 v-for="header in table.getFlatHeaders()"
                 :key="header.id"
                 :colspan="header.colSpan"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
               >
                 <div class="flex items-center gap-2">
                   <span>{{ header.isPlaceholder ? null : header.column.columnDef.header }}</span>
@@ -43,51 +43,37 @@
               <td
                 v-for="cell in row.getVisibleCells()"
                 :key="cell.id"
-                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
               >
-                <div v-if="cell.column.id === 'logo_url'" class="flex items-center justify-center">
-                  <img
-                    :src="cell.getValue()"
-                    :alt="`${row.original.ticker} logo`"
-                    class="w-10 h-10 object-contain rounded border-none"
-                  />
-                </div>
                 <div
-                  v-else-if="cell.column.id === 'ticker'"
-                  class="font-mono font-semibold text-primary"
-                >
+                  v-if="cell.column.id === 'ticker'"
+                  class="font-mono font-bold">
                   {{ cell.getValue() }}
                 </div>
-                <div v-else-if="cell.column.id === 'company_name'" class="max-w-40">
-                  <div class="font-medium text-gray-900 truncate" :title="cell.getValue()">
+                <div v-else-if="cell.column.id === 'company_name'" class="max-w-50">
+                  <div class="font-medium truncate" :title="cell.getValue()">
                     {{ cell.getValue() }}
                   </div>
                 </div>
                 <div
                   v-else-if="cell.column.id === 'industry_name'"
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                  class="truncate max-w-30"
                 >
                   {{ cell.getValue() }}
                 </div>
                 <div
                   v-else-if="cell.column.id === 'exchange'"
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                  class="truncate max-w-20"
                 >
                   {{ cell.getValue() }}
                 </div>
-                <div v-else-if="cell.column.id === 'website'">
-                  <a
-                    v-if="cell.getValue()"
-                    :href="cell.getValue()"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-primary hover:text-primary-dark underline"
-                  >
-                    Visit
-                  </a>
-                  <span v-else class="text-gray-400">N/A</span>
+                <div
+                  v-else-if="cell.column.id === 'analyses'"
+                  class="truncate max-w-40 font-bold"
+                >
+                  {{ cell.getValue() }}
                 </div>
-                <div v-else class="text-sm text-gray-900">
+                <div v-else class="text-sm">
                   {{ cell.getValue() }}
                 </div>
               </td>
@@ -200,34 +186,44 @@ const pagination = reactive<PaginationState>({
 
 const columns: ColumnDef<Company>[] = [
   {
-    accessorKey: 'logo_url',
-    header: 'Logo',
-    cell: ({ row }) => row.original.logo_url,
-  },
-  {
     accessorKey: 'ticker',
     header: 'Ticker',
     cell: ({ row }) => row.original.ticker,
   },
   {
     accessorKey: 'company_name',
-    header: 'Company Name',
-    cell: ({ row }) => row.original.company_name.trim() || row.original.short_name || 'N/A',
+    header: 'Company',
+    cell: ({ row }) => row.original.short_name.trim() || row.original.company_name.trim() || 'N/A',
   },
   {
     accessorKey: 'industry_name',
     header: 'Industry',
-    cell: ({ row }) => row.original.industry_name || 'N/A',
   },
   {
     accessorKey: 'exchange',
     header: 'Exchange',
-    cell: ({ row }) => row.original.exchange,
+    cell: ({ row }) => row.original.exchange || 'N/A',
   },
   {
-    accessorKey: 'website',
-    header: 'Website',
-    cell: ({ row }) => row.original.website || null,
+    accessorFn: (row) => {
+      const analyses = row.analyses
+      if (analyses && analyses.length > 0) {
+        const latestAnalysis = analyses[0]
+        const targetChange = latestAnalysis.target_to - latestAnalysis.target_from
+        const percentageChange = ((targetChange / latestAnalysis.target_from) * 100).toFixed(1)
+        const isPositive = targetChange > 0
+        const isNegative = targetChange < 0
+        
+        let icon = '😶‍🌫️'
+        if (isPositive) icon = '🔥'
+        if (isNegative) icon = '💤'
+        
+        return `${icon} ${isPositive ? '+' : ''}${percentageChange}% | ${latestAnalysis.rating_to} `
+      }
+      return 'No analyses'
+    },
+    header: 'Latest Analysis',
+    id: 'analyses',
   },
 ]
 

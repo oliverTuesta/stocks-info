@@ -23,7 +23,9 @@ export class CompanyService {
       throw new Error(`Failed to fetch companies: ${response.statusText}`)
     }
 
-    return CompaniesResponse = await response.json()
+    let data = await response.json()
+    console.log(data)
+    return data;
   }
 
   static async getAllCompanies(): Promise<Company[]> {
