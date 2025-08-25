@@ -20,7 +20,23 @@ func (r *CompanyRepositoryDB) GetAllPaginated(req domain.PaginationRequest) (*do
 	var companies []domain.Company
 	var total int64
 
-	query := r.db.Model(&domain.Company{})
+	// First query for counting (without preloads for better performance)
+	countQuery := r.db.Model(&domain.Company{})
+	if req.Search != "" {
+		searchTerm := "%" + strings.ToLower(req.Search) + "%"
+		countQuery = countQuery.Where(
+			"LOWER(ticker) LIKE ? OR LOWER(company_name) LIKE ? OR LOWER(short_name) LIKE ?",
+			searchTerm, searchTerm, searchTerm,
+		)
+	}
+	if err := countQuery.Count(&total).Error; err != nil {
+		return nil, err
+	}
+
+	// Second query for fetching data with preloads
+	query := r.db.Preload("Analyses", func(db *gorm.DB) *gorm.DB {
+		return db.Order("time DESC, created_at DESC").Limit(1)
+	})
 
 	if req.Search != "" {
 		searchTerm := "%" + strings.ToLower(req.Search) + "%"
@@ -28,10 +44,6 @@ func (r *CompanyRepositoryDB) GetAllPaginated(req domain.PaginationRequest) (*do
 			"LOWER(ticker) LIKE ? OR LOWER(company_name) LIKE ? OR LOWER(short_name) LIKE ?",
 			searchTerm, searchTerm, searchTerm,
 		)
-	}
-
-	if err := query.Count(&total).Error; err != nil {
-		return nil, err
 	}
 
 	offset := (req.Page - 1) * req.PageSize
