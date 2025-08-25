@@ -39,10 +39,11 @@ func (uc *CompaniesImporter) Execute(r io.Reader) error {
 		}
 
 		marketCap, _ := strconv.ParseUint(row[9], 10, 64)
-		logoUrl := fmt.Sprintf("%s%s.png", uc.logoBaseURL, row[6])
+		ticker := row[0]
+		logoUrl := fmt.Sprintf("%s%s.png", uc.logoBaseURL, ticker)
 
 		company := domain.Company{
-			Ticker:      row[0],
+			Ticker:      ticker,
 			CompanyName: row[1],
 			ShortName:   row[2],
 			Industry:    row[3],

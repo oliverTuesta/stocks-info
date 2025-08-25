@@ -31,6 +31,7 @@ func main() {
 	apiRoutes := router.Group("/api")
 	{
 		apiRoutes.GET("/companies", companyHandler.ListCompanies)
+		apiRoutes.GET("/companies/:ticker", companyHandler.GetCompanyByTicker)
 	}
 	router.Run()
 }

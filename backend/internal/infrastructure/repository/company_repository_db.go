@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"errors"
 	"github.com/oliverTuesta/stocks-info/backend/internal/domain"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"strings"
 )
 
 type CompanyRepositoryDB struct {
@@ -14,21 +16,57 @@ func NewCompanyRepositoryDB(db *gorm.DB) *CompanyRepositoryDB {
 	return &CompanyRepositoryDB{db: db}
 }
 
-func (r *CompanyRepositoryDB) GetAll() ([]domain.Company, error) {
+func (r *CompanyRepositoryDB) GetAllPaginated(req domain.PaginationRequest) (*domain.PaginatedResult[domain.Company], error) {
 	var companies []domain.Company
-	err := r.db.Limit(10).Find(&companies).Error
-	if err != nil {
+	var total int64
+
+	query := r.db.Model(&domain.Company{})
+
+	if req.Search != "" {
+		searchTerm := "%" + strings.ToLower(req.Search) + "%"
+		query = query.Where(
+			"LOWER(ticker) LIKE ? OR LOWER(company_name) LIKE ? OR LOWER(short_name) LIKE ?",
+			searchTerm, searchTerm, searchTerm,
+		)
+	}
+
+	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
-	return companies, nil
+
+	offset := (req.Page - 1) * req.PageSize
+	if err := query.Limit(req.PageSize).Offset(offset).Find(&companies).Error; err != nil {
+		return nil, err
+	}
+
+	pagination := domain.PaginationResponse{
+		Page:     req.Page,
+		PageSize: req.PageSize,
+		Total:    total,
+	}
+	pagination.CalculateTotalPages()
+
+	return &domain.PaginatedResult[domain.Company]{
+		Data:       companies,
+		Pagination: pagination,
+	}, nil
 }
 
-func (r *CompanyRepositoryDB) FindByTicker(ticker string) (*domain.Company, error) {
+func (r *CompanyRepositoryDB) GetByTicker(ticker string) (*domain.Company, error) {
 	var company domain.Company
-	err := r.db.Where("ticker = ?", ticker).First(&company).Error
+	ticker = strings.ToUpper(strings.TrimSpace(ticker))
+
+	err := r.db.Preload("Analyses", func(db *gorm.DB) *gorm.DB {
+		return db.Order("time DESC, created_at DESC").Limit(1)
+	}).Where("ticker = ?", ticker).First(&company).Error
+
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("company not found")
+		}
 		return nil, err
 	}
+
 	return &company, nil
 }
 

@@ -4,7 +4,7 @@ import "time"
 
 type Company struct {
 	ID          uint   `gorm:"primaryKey;autoIncrement;not null" json:"id"`
-	Ticker      string `gorm:"column:ticker;not null;uniqueIndex" json:"ticker"`
+	Ticker      string `gorm:"column:ticker;index:idx_companies_ticker;not null" json:"ticker"`
 	CompanyName string `gorm:"column:company_name;not null" json:"company_name"`
 	ShortName   string `gorm:"column:short_name;not null" json:"short_name"`
 	Industry    string `gorm:"column:industry;null" json:"industry_name"`

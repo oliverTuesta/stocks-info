@@ -28,7 +28,7 @@ func (uc *AnalysisUsecase) Execute() error {
 	}
 	var analysis = make([]domain.StockAnalysis, 0, len(items))
 	for _, item := range items {
-		company, err := uc.companyRepo.FindByTicker(item.Ticker)
+		company, err := uc.companyRepo.GetByTicker(item.Ticker)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			continue
 		}
