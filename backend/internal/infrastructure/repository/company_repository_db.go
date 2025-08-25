@@ -35,7 +35,7 @@ func (r *CompanyRepositoryDB) GetAllPaginated(req domain.PaginationRequest) (*do
 
 	// Second query for fetching data with preloads
 	query := r.db.Preload("Analyses", func(db *gorm.DB) *gorm.DB {
-		return db.Order("time DESC, created_at DESC").Limit(1)
+		return db.Order("time DESC")
 	})
 
 	if req.Search != "" {
