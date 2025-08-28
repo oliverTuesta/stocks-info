@@ -9,13 +9,13 @@
       </div>
     </section>
 
-    <section id="features" class="container mx-auto px-6 mt-16">
-      <h3 class="text-2xl font-bold">Features</h3>
-      <p class="text-gray-700 mt-2 max-w-2xl">Packed with experts recommendations powered with AI tools for new investors</p>
+    <section id="features" class="container mt-16 mx-auto lg:px-6">
+      <h2>Features</h2>
+      <p>Packed with experts recommendations powered with AI tools for new investors</p>
 
       <div class="mt-6 grid grid-cols-1 sm:grid-cols-2  gap-6">
-        <div v-for="f in features" :key="f.title" class="p-5 rounded-2xl bg-gray-100 flex flex-row gap-5">
-          <div class="w-20 h-20 flex-none flex items-center justify-center my-auto rounded-lg bg-white">
+        <div v-for="f in features" :key="f.title" class="p-5 rounded-lg bg-gray-100 flex flex-row gap-5">
+          <div class="w-20 h-20 flex-none flex items-center justify-center my-auto rounded bg-white">
             <component :is="f.icon" class="w-8 h-8 text-black" />
           </div>
           <div>
@@ -25,12 +25,16 @@
         </div>
       </div>
     </section>
+    <section class="container mt-16 mx-auto lg:px-6">
+      <HotCompanies/>
+    </section>
   </main>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { UserPenIcon, PanelBottomDashedIcon, SquirrelIcon } from 'lucide-vue-next'
+import HotCompanies from '@/components/HotCompanies.vue'
 
 const features = ref([{
   title: 'Investor fit',

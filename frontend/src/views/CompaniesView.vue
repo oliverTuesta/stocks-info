@@ -39,7 +39,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="row in table.getRowModel().rows" :key="row.id" class="hover:bg-gray-50">
+            <tr v-for="row in table.getRowModel().rows" :key="row.id" class="hover:bg-gray-50 cursor-pointer" @click="handleRowClick(row.original)">
               <td
                 v-for="cell in row.getVisibleCells()"
                 :key="cell.id"
@@ -158,6 +158,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   type ColumnDef,
   getCoreRowModel,
@@ -169,6 +170,9 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from 'lucide-vue-next'
 import { CompanyService } from '@/services/companyService'
 import type { Company } from '@/types/company'
+
+// Router
+const router = useRouter()
 
 // states
 const companies = ref<Company[]>([])
@@ -283,6 +287,10 @@ const handleSearch = () => {
     pagination.pageIndex = 0
     fetchCompanies()
   }, 300)
+}
+
+const handleRowClick = (company: Company) => {
+  router.push(`/companies/${company.ticker}`)
 }
 
 const goToPage = (page: number) => {

@@ -27,15 +27,4 @@ export class CompanyService {
     console.log(data)
     return data;
   }
-
-  static async getAllCompanies(): Promise<Company[]> {
-    const response = await fetch(`${API_BASE_URL}/api/companies`)
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch companies: ${response.statusText}`)
-    }
-
-    const data = await response.json()
-    return data.data || data
-  }
 }

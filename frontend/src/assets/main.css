@@ -6,24 +6,38 @@
     --color-primary: oklch(27.9% 0.041 260.031); /* Example primary color */
     /* You can also define shades if needed */
     --color-primary-light: oklch(55.4% 0.046 257.417);
-    --color-primary-dark: #3a4b9c;
+    --color-primary-dark: oklch(0.226 0.03 261.305); /* Example primary color */
+
+    --color-secundary: oklch(60.2% 0.1 340.0); /* Example secondary color */
 }
 
 #app {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-  font-family: "Satoshi", sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-weight: normal;
+    font-family: "Satoshi", sans-serif;
 }
 
 h1,h2,h3,h4,h5,h6 {
-  @apply font-bold;
+    @apply font-bold;
 }
-
 h1 {
     @apply text-4xl mb-4;
 }
+
+h2 {
+    @apply text-3xl mb-3;
+}
+
+h3 {
+    @apply text-2xl mb-2;
+}
+
+p {
+    @apply mt-2
+}
+
 
 button {
     @apply px-4 py-2 rounded transition;
