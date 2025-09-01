@@ -14,7 +14,7 @@
       <p>Packed with experts recommendations powered with AI tools for new investors</p>
 
       <div class="mt-6 grid grid-cols-1 sm:grid-cols-2  gap-6">
-        <div v-for="f in features" :key="f.title" class="p-5 rounded-lg bg-gray-100 flex flex-row gap-5">
+        <div v-for="f in features" :key="f.title" class="p-5 rounded-lg bg-primary-light flex flex-row gap-5">
           <div class="w-20 h-20 flex-none flex items-center justify-center my-auto rounded bg-white">
             <component :is="f.icon" class="w-8 h-8 text-black" />
           </div>

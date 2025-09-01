@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div>
     <!-- Loading State -->
     <div v-if="loading" class="flex items-center justify-center min-h-screen">
       <div class="text-center">
@@ -55,13 +55,10 @@
         </router-link>
       </div>
 
-      <!-- Company Header -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <!-- Company Info -->
-          <div class="flex items-start gap-6">
-            <!-- Logo -->
-            <div class="w-24 h-24 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+      <div class="rounded-lg p-6 mb-6 bg-primary-light">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+          <div class="flex gap-6 w-full">
+            <div class="w-24 h-24 rounded-xl bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
               <img
                 v-if="company.logo_url"
                 :src="company.logo_url"
@@ -77,13 +74,28 @@
               </div>
             </div>
 
-            <!-- Company Details -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-3xl font-bold text-gray-900">{{ company.short_name || company.company_name }}</h1>
-                <span class="px-3 py-1 bg-primary text-white text-sm font-semibold rounded-full">
+            <div class="w-full">
+              <div class="flex justify-between">
+                <div class="flex items-center gap-3 mb-2">
+                  <h1>{{ company.short_name || company.company_name }}</h1>
+                  <span class="px-3 py-1 bg-primary text-white text-sm font-semibold rounded-full">
                   {{ company.ticker }}
                 </span>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                  <a
+                    v-if="company.website"
+                    :href="company.website"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+                  >
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    Visit Website
+                  </a>
+                </div>
               </div>
               <p class="text-lg text-gray-600 mb-4">{{ company.company_name }}</p>
               
@@ -105,30 +117,18 @@
                   <p class="text-sm text-gray-500">Market Cap</p>
                   <p class="font-semibold text-gray-900">{{ formatMarketCap(company.market_cap) }}</p>
                 </div>
+
               </div>
             </div>
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row gap-3">
-            <a
-              v-if="company.website"
-              :href="company.website"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
-            >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-              Visit Website
-            </a>
-          </div>
+
         </div>
       </div>
 
       <!-- Company Description -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="rounded-xl bg-primary-light p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-4">About {{ company.short_name || company.company_name }}</h2>
         <p class="text-gray-700 leading-relaxed">{{ company.description || 'No description available.' }}</p>
         
@@ -140,10 +140,6 @@
                 <div class="flex justify-between">
                   <span class="text-gray-600">CEO:</span>
                   <span class="font-medium text-gray-900">{{ company.ceo || 'N/A' }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Founded:</span>
-                  <span class="font-medium text-gray-900">{{ formatDate(company.created_at) }}</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-gray-600">Last Updated:</span>
@@ -174,21 +170,19 @@
       </div>
 
       <!-- Latest Analysis -->
-      <div v-if="company.analyses && company.analyses.length > 0" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div v-if="company.analyses && company.analyses.length > 0" class="bg-primary-light rounded-xl border border-gray-200 p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-4">Latest Analyst Analysis</h2>
         
         <div class="space-y-4">
           <div
             v-for="analysis in company.analyses"
             :key="analysis.id"
-            class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+            class="rounded-lg p-4 bg-white"
           >
             <div class="flex items-start justify-between mb-3">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
+                <div class="w-12 h-12 bg-primary-light rounded-full flex items-center justify-center">
+                  <ChartLineIcon class="w-8 h-8"/>
                 </div>
                 <div>
                   <h3 class="font-semibold text-gray-900">{{ analysis.brokerage }}</h3>
@@ -242,7 +236,7 @@
       </div>
 
       <!-- No Analysis State -->
-      <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div v-else class="rounded-xl shadow-sm border border-gray-200 p-6">
         <div class="text-center py-8">
           <div class="text-gray-400 mb-4">
             <svg class="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,6 +256,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Company } from '@/types/company'
 import { CompanyDetailsService } from '@/services/companyDetailsService'
+import { ChartLineIcon } from 'lucide-vue-next'
 
 // Route and router
 const route = useRoute()
@@ -355,7 +350,6 @@ const getTargetChangeText = (from: number, to: number): string => {
   return 'No change'
 }
 
-// Lifecycle
 onMounted(() => {
   fetchCompanyDetails()
 })

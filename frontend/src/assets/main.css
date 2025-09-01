@@ -5,7 +5,7 @@
 @theme {
     --color-primary: oklch(27.9% 0.041 260.031); /* Example primary color */
     /* You can also define shades if needed */
-    --color-primary-light: oklch(55.4% 0.046 257.417);
+    --color-primary-light: oklch(92.9% 0.013 255.508);
     --color-primary-dark: oklch(0.226 0.03 261.305); /* Example primary color */
 
     --color-secundary: oklch(60.2% 0.1 340.0); /* Example secondary color */

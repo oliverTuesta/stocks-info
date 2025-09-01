@@ -9,7 +9,7 @@
       <p>Top 10 trending companies with recent analyst activity</p>
     </div>
 
-    <div class="p-6 bg-gray-100 mt-6 rounded-xl">
+    <div class="p-6 bg-primary-light mt-6 rounded-xl">
       <!-- Loading State -->
       <div v-if="loading && companies.length === 0" class="flex items-center justify-center py-12">
         <div class="text-center">
