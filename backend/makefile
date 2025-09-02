@@ -1,39 +1,32 @@
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := test
 
-.PHONY: fmt vet test build clean \
-        build-fetcher build-server \
-        run-fetcher run-server
+.PHONY: fmt vet test build run-server run-fetcher clean
 
-# Format and lint
+# Format and vet
 fmt:
 	go fmt ./...
 
 vet: fmt
 	go vet ./...
 
+# Run unit tests
 test:
 	go test ./...
 
-# Build both binaries
-build: test vet build-fetcher build-server
-
-# Build fetcher binary
-build-fetcher:
+# Build binaries
+build:
+	go build -o bin/server ./cmd/server
 	go build -o bin/fetcher ./cmd/fetcher
 
-# Build server binary
-build-server:
-	go build -o bin/server ./cmd/server
-
-# Run fetcher directly (without building binary)
-run-fetcher:
-	go run ./cmd/fetcher
-
-# Run server directly (without building binary)
+# Run server or fetcher directly
 run-server:
 	go run ./cmd/server
 
-# Clean build artifacts
+run-fetcher:
+	go run ./cmd/fetcher
+
+# Clean artifacts
 clean:
 	go clean
 	rm -rf bin/
+	rm -f coverage.out coverage.html

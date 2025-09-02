@@ -2,12 +2,13 @@ package domain
 
 import (
 	"encoding/json"
+	"math"
 	"strconv"
 	"strings"
 	"time"
 )
 
-type Price uint64
+type Price int64
 
 func (p *Price) UnmarshalJSON(data []byte) error {
 	var str string
@@ -18,13 +19,14 @@ func (p *Price) UnmarshalJSON(data []byte) error {
 	str = strings.TrimSpace(str)
 	str = strings.ReplaceAll(str, "$", "")
 	str = strings.ReplaceAll(str, ",", "")
+	str = strings.ReplaceAll(str, " ", "")
 
 	f, err := strconv.ParseFloat(str, 64)
 	if err != nil {
 		return err
 	}
 
-	*p = Price(f * 100)
+	*p = Price(math.Round(f * 100))
 	return nil
 }
 

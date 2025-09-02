@@ -45,7 +45,8 @@ func (uc *CompanyUsecase) GetCompanyAIAnalysis(ticker string) (*domain.AIAnalysi
 
 	analysis, err := uc.repository.GetAIAnalysisByCompanyId(company.ID)
 	if err == nil && analysis != nil {
-		if time.Since(analysis.UpdatedAt) < 30*24*time.Hour {
+		// Return cached analysis only if it was generated today (UTC date)
+		if analysis.UpdatedAt.UTC().Format("2006-01-02") == time.Now().UTC().Format("2006-01-02") {
 			return analysis, nil
 		}
 	} else if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -97,7 +98,7 @@ Example of the required JSON format:
   "recommendation": "..."
 }
 
-Return the plain JSON only, without any additional text or formatting. (No markdown, no code blocks, no explanations).`
+Return ONLY a single JSON object (No markdown, no code blocks, no explanations).`
 
 	return contextInfo + "\n" + instruction
 }
@@ -106,6 +107,9 @@ func parseAIAnalysisFromText(content string) (*domain.AIAnalysis, error) {
 	c := strings.TrimSpace(content)
 	start := strings.Index(c, "{")
 	end := strings.LastIndex(c, "}")
+	if start == -1 || end == -1 || end < start {
+		return nil, fmt.Errorf("no valid JSON object found in AI response")
+	}
 	c = c[start : end+1]
 
 	var payload struct {
