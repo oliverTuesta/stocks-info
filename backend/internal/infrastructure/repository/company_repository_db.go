@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"github.com/oliverTuesta/stocks-info/backend/internal/domain"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -73,9 +72,6 @@ func (r *CompanyRepositoryDB) GetByTicker(ticker string) (*domain.Company, error
 	}).Where("ticker = ?", ticker).First(&company).Error
 
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("company not found")
-		}
 		return nil, err
 	}
 
@@ -142,4 +138,17 @@ func (r *CompanyRepositoryDB) GetHotCompanies(limit int) ([]domain.Company, erro
 	}
 
 	return orderedCompanies, nil
+}
+
+func (r *CompanyRepositoryDB) GetAIAnalysisByCompanyId(companyID uint) (*domain.AIAnalysis, error) {
+	var analysis domain.AIAnalysis
+	err := r.db.Where("company_id = ?", companyID).Order("created_at DESC").Limit(1).First(&analysis).Error
+	if err != nil {
+		return nil, err
+	}
+	return &analysis, nil
+}
+
+func (r *CompanyRepositoryDB) CreateAIAnalysis(analysis *domain.AIAnalysis) error {
+	return r.db.Create(analysis).Error
 }

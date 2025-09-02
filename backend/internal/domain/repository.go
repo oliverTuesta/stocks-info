@@ -6,6 +6,8 @@ type CompanyRepository interface {
 	CreateMany(company []Company) error
 	CreateOne(company *Company) error
 	GetHotCompanies(limit int) ([]Company, error)
+	GetAIAnalysisByCompanyId(companyID uint) (*AIAnalysis, error)
+	CreateAIAnalysis(analysis *AIAnalysis) error
 }
 
 type StockAnalysisRepository interface {

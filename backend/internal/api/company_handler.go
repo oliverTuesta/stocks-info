@@ -58,3 +58,13 @@ func (h *CompanyHandler) GetHotCompanies(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, companies)
 }
+
+func (h *CompanyHandler) GetCompanyAIAnalysis(c *gin.Context) {
+	ticker := c.Param("ticker")
+	analysis, err := h.usecase.GetCompanyAIAnalysis(ticker)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, analysis)
+}

@@ -9,6 +9,7 @@ func Migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&domain.StockAnalysis{},
 		&domain.Company{},
+		&domain.AIAnalysis{},
 	)
 	if err != nil {
 		return err
