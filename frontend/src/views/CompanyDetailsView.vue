@@ -236,7 +236,7 @@
       </div>
 
       <!-- No Analysis State -->
-      <div v-else class="rounded-xl shadow-sm border border-gray-200 p-6">
+      <div v-else class="rounded-xl border border-gray-200 p-6">
         <div class="text-center py-8">
           <div class="text-gray-400 mb-4">
             <svg class="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,6 +247,10 @@
           <p class="text-gray-600">This company doesn't have any analyst coverage yet.</p>
         </div>
       </div>
+
+      <section class="mt-6">
+        <AIAnalysis :ticker="company.ticker" />
+      </section>
     </div>
   </div>
 </template>
@@ -257,6 +261,7 @@ import { useRoute, useRouter } from 'vue-router'
 import type { Company } from '@/types/company'
 import { CompanyDetailsService } from '@/services/companyDetailsService'
 import { ChartLineIcon } from 'lucide-vue-next'
+import AIAnalysis from '@/components/AIAnalysis.vue'
 
 // Route and router
 const route = useRoute()

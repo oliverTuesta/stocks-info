@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import CompaniesView from '../views/CompaniesView.vue'
 import CompanyDetailsView from '../views/CompanyDetailsView.vue'
+import HotCompaniesView from '@/views/HotCompaniesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,12 @@ const router = createRouter({
       path: '/companies/:ticker',
       name: 'company-details',
       component: CompanyDetailsView,
+      props: true
+    },
+    {
+      path: '/hot',
+      name: 'hot companies',
+      component: HotCompaniesView,
       props: true
     },
     {

@@ -5,7 +5,10 @@
         <h1>Welcome to stocks-info</h1>
         <p>The best place to see the <b>real worth</b> of your stocks</p>
         <img class="hero-image" src="/spigi.png" alt="Oliver Tuesta cartoon drawing"/>
-        <button class="bg-white hover:bg-gray-300 text-black mt-4">Let's go</button>
+
+        <router-link to="/companies">
+          <button class="bg-white hover:bg-gray-300 text-black mt-4">Let's go</button>
+        </router-link>
       </div>
     </section>
 
@@ -25,16 +28,12 @@
         </div>
       </div>
     </section>
-    <section class="container mt-16 mx-auto lg:px-6">
-      <HotCompanies/>
-    </section>
   </main>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { UserPenIcon, PanelBottomDashedIcon, SquirrelIcon } from 'lucide-vue-next'
-import HotCompanies from '@/components/HotCompanies.vue'
 
 const features = ref([{
   title: 'Investor fit',

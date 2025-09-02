@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <!-- Header -->
+  <div class="mt-5">
     <div>
       <h2 class="my-auto flex items-center">
         <FlameIcon class="w-10 h-10 mr-2 text-rose-500"/>
@@ -41,56 +40,57 @@
           class="group relative bg-white rounded-lg p-4 hover:shadow transition-all duration-200 cursor-pointer"
           @click="handleCompanyClick(company)"
         >
-          <!-- Rank Badge -->
-          <div class="absolute -top-2 -left-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold shadow-lg">
-            {{ index + 1 }}
-          </div>
+          <RouterLink :to="`/companies/${company.ticker}`">
+            <!-- Rank Badge -->
+            <div class="absolute -top-2 -left-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold shadow-lg">
+              {{ index + 1 }}
+            </div>
 
-          <!-- Company Logo -->
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
-              <img
-                v-if="company.logo_url"
-                :src="company.logo_url"
-                :alt="company.short_name"
-                class="w-full h-full object-contain"
-                @error="handleImageError"
-              />
-              <div
-                v-else
-                class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-600 font-bold text-lg"
-              >
-                {{ company.ticker.charAt(0) }}
+            <!-- Company Logo -->
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+                <img
+                  v-if="company.logo_url"
+                  :src="company.logo_url"
+                  :alt="company.short_name"
+                  class="w-full h-full object-contain"
+                  @error="handleImageError"
+                />
+                <div
+                  v-else
+                  class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-600 font-bold text-lg"
+                >
+                  {{ company.ticker.charAt(0) }}
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-gray-900 truncate">{{ company.short_name || company.company_name }}</h3>
+                <p class="text-sm text-gray-600 font-mono">{{ company.ticker }}</p>
               </div>
             </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-gray-900 truncate">{{ company.short_name || company.company_name }}</h3>
-              <p class="text-sm text-gray-600 font-mono">{{ company.ticker }}</p>
-            </div>
-          </div>
 
-          <!-- Company Info -->
-          <div class="space-y-2 text-sm">
-            <div class="flex items-center gap-2">
-              <span class="text-gray-500">Sector:</span>
-              <span class="font-medium text-gray-700 truncate">{{ company.sector || 'N/A' }}</span>
+            <!-- Company Info -->
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-gray-500">Sector:</span>
+                <span class="font-medium text-gray-700 truncate">{{ company.sector || 'N/A' }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-gray-500">Market Cap:</span>
+                <span class="font-medium text-gray-700">{{ formatMarketCap(company.market_cap) }}</span>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="text-gray-500">Market Cap:</span>
-              <span class="font-medium text-gray-700">{{ formatMarketCap(company.market_cap) }}</span>
-            </div>
-          </div>
 
-          <!-- Analysis Info -->
-          <div v-if="company.analyses && company.analyses.length > 0" class="mt-3 pt-3 border-t border-gray-200">
-            <div class="flex items-center gap-2 text-xs">
-              <span class="text-gray-500">Latest:</span>
-              <span class="font-medium text-gray-700">{{ getLatestAnalysis(company.analyses) }}</span>
+            <!-- Analysis Info -->
+            <div v-if="company.analyses && company.analyses.length > 0" class="mt-3 pt-3 border-t border-gray-200">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-gray-500">Latest:</span>
+                <span class="font-medium text-gray-700">{{ getLatestAnalysis(company.analyses) }}</span>
+              </div>
             </div>
-          </div>
-
-          <!-- Hover Effect -->
-          <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-primary-light/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
+            <!-- Hover Effect -->
+            <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-primary-light/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
+          </RouterLink>
         </div>
       </div>
 
@@ -139,7 +139,7 @@ const error = ref<string | null>(null)
 const fetchHotCompanies = async () => {
   loading.value = true
   error.value = null
-  
+
   try {
     const data = await HotCompaniesService.getHotCompanies()
     companies.value = data
@@ -176,16 +176,16 @@ const formatMarketCap = (marketCap: number): string => {
 
 const getLatestAnalysis = (analyses: any[]): string => {
   if (!analyses || analyses.length === 0) return 'No analysis'
-  
+
   const latest = analyses[0]
   const targetChange = latest.target_to - latest.target_from
   const percentageChange = ((targetChange / latest.target_from) * 100).toFixed(1)
   const isPositive = targetChange > 0
-  
+
   let icon = '😶‍🌫️'
   if (isPositive) icon = '🔥'
   if (targetChange < 0) icon = '💤'
-  
+
   return `${icon} ${isPositive ? '+' : ''}${percentageChange}% | ${latest.rating_to}`
 }
 
@@ -193,3 +193,8 @@ onMounted(() => {
   fetchHotCompanies()
 })
 </script>
+
+
+<style scoped>
+
+</style>
