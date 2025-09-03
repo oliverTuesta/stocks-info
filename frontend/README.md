@@ -1,3 +1,41 @@
+# Frontend — Stocks info
+
+This is the frontend single page application for Stocks info.
+
+Technology
+
+- Vue.js 3
+- Tailwind CSS 4
+- Vite
+- TanStack Tables (for data tables)
+
+Getting started
+
+1. Install dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+2. Start development server
+
+```bash
+npm run dev
+```
+
+3. Build for production
+
+```bash
+npm run build
+```
+
+Notes
+
+- Environment variables: example file available at `frontend/.env.example`. Adjust `BASE_URL` to point to your backend API if needed (for local dev use `localhost:8080` or the API server address).
+- Tables are implemented using TanStack (see `package.json` for versions).
+- If you encounter typing errors run `npm run type-check` (uses `vue-tsc`).
+
 # frontend
 
 This template should help get you started developing with Vue 3 in Vite.

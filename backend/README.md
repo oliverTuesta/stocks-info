@@ -80,4 +80,19 @@ Notes and troubleshooting
 -   The fetcher reads `backend/data/companies.csv` using a relative path; run it from the `backend/` folder or ensure the working directory contains `data/companies.csv`.
 -   Gemini: obtain your API key from Google Gemini (Cloud Console / API keys) and set `GEMINI_API_KEY` in the `.env` file.
 
-If you'd like, I can add example `.env` values (redacted), sample CSV columns expected by the importer, or a minimal Postgres docker-compose file for local testing.
+Docker (optional)
+
+You can run the backend inside Docker using the provided `docker-compose.yml`. Copy and fill the `.env` file first:
+
+```bash
+cp .env.sample .env
+# edit .env and add your values
+```
+
+Then from the `backend/` folder build and run the service:
+
+```bash
+docker compose up --build
+```
+
+The service will be available on port 8080 (example: `http://localhost:8080/api/companies`).
