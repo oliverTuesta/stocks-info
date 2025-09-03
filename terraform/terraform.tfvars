@@ -1,0 +1,14 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+# AWS Region where you want to deploy
+aws_region = "us-east-1"
+
+# EC2 instance type (t3.micro is free tier eligible)
+instance_type = "t3.micro"
+
+# Name of your AWS key pair (must exist in your AWS account)
+# Create one in EC2 console if you don't have it
+key_name = "stocks-info"
+
+# Application name for resource tagging
+app_name = "stocks-info"
